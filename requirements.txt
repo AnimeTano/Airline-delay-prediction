@@ -1,0 +1,17 @@
+# Data processing
+pandas 
+numpy
+
+# Visualization
+matplotlib
+seaborn
+
+# ML
+scikit-learn
+xgboost
+lightgbm
+catboost
+
+# Notebooks
+jupyter
+ipykernel
