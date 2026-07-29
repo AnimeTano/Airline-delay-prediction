@@ -78,14 +78,21 @@ Shape: (171666, 21)
 
 ## Missing values
 
-Found missing values in:
+Missing values were found in several numerical columns.
 
-- arr_flights
-- arr_del15
-- delay cause columns
-- cancellation/diversion columns
+Important columns for target creation:
 
-Need to investigate whether missing values represent missing information or zero values.
+| Column | Missing values | Percentage |
+|---|---:|---:|
+| arr_flights | 240 | 0.14% |
+| arr_del15 | 443 | 0.26% |
+
+Since `arr_flights` and `arr_del15` are required to calculate the target variable, rows with missing values in these columns cannot be used.
+
+Decision:
+
+- Remove rows with missing values in `arr_flights` or `arr_del15`.
+- The amount of removed data is less than 1%, therefore it should not significantly affect the dataset distribution.
 
 
 ## Duplicates
@@ -102,6 +109,81 @@ No duplicated rows found.
 - Analyze percentage of delayed flights distribution
 - Validate selected threshold
 
+## Seasonal analysis
+
+The probability of a problematic month varies significantly depending on the month.
+
+The highest delay rates are observed during:
+- June (55.1%)
+- July (53.5%)
+- December (50.1%)
+
+The lowest delay rates are observed during:
+- September (20.1%)
+- October (24.9%)
+- November (25.8%)
+
+This suggests a seasonal component in flight delays. Summer months and the holiday period in December have a higher probability of problematic operations.
+
+## Yearly analysis
+
+The share of problematic months changes over time.
+
+A noticeable decrease can be observed in 2020, which may be related to the COVID-19 pandemic and the significant reduction in air traffic.
+
+After 2020, the share of problematic months increases sharply, indicating a deterioration of operational stability during the recovery period.
+
+## Airport workload analysis
+
+The number of arriving flights has a highly skewed distribution.
+
+Statistics:
+- Median: 101 flights per month
+- Mean: 363 flights per month
+- Maximum: 21,977 flights per month
+
+The large difference between mean and median indicates the presence of major airport hubs with significantly higher traffic volumes.
+
+## Airport workload analysis
+
+A positive relationship can be observed between airport workload and probability of a problematic month.
+
+Airports with the highest flight volumes have a higher share of problematic months:
+
+- Very Low traffic: 35.3%
+- Very High traffic: 41.8%
+
+This suggests that airport workload may be an informative feature for the classification model.
+
+## Delay causes analysis
+
+Delay causes differ significantly between normal and problematic months.
+
+The biggest contributors to problematic months are:
+
+1. Late aircraft arrival
+2. National Airspace System (NAS) delays
+3. Carrier-related delays
+
+Compared with normal months, problematic months have approximately twice as many delays caused by late aircraft arrival and NAS issues.
+
+This suggests that operational factors and network congestion play a larger role in severe delay periods than external factors such as weather.
+
+## Numerical features correlation analysis
+
+No strong linear correlation was found between numerical features and the target variable.
+
+The highest correlation with `bad_month` was observed for:
+- `arr_diverted`: 0.049
+- `arr_cancelled`: 0.023
+
+This indicates that numerical features alone are not sufficient for prediction.
+
+Strong correlations were observed between traffic volume and operational disruption counts:
+- `arr_flights` and `arr_diverted`: 0.64
+- `arr_flights` and `arr_cancelled`: 0.42
+
+Categorical features such as airline and airport are expected to provide more predictive information.
 
 ## Airline analysis
 
