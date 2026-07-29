@@ -79,20 +79,23 @@
 
 ## Структура проекта
 
+```
 .
 ├── data/
-│   ├── raw/                     # исходные данные
-│   └── processed/               # подготовленные выборки
-├── notebooks/                   # Jupyter-ноутбуки с EDA
+│   ├── raw/                    # исходные данные (Airline_Delay_Cause.csv)
+│   └── processed/              # подготовленные выборки (train/val/test)
+├── notebooks/
+│   └── 01_eda.ipynb            # исследовательский анализ
 ├── src/
-│   ├── prepare_data.py          # подготовка и разделение данных
-│   ├── train.py                 # обучение модели
-│   └── utils.py                 # вспомогательные функции
-├── models/                      # сохранённые модели и трансформеры
-├── app.py                       # Streamlit-приложение
+│   ├── prepare_data.py         # очистка, инженерия, разделение
+│   ├── train.py                # обучение модели
+│   └── utils.py                # вспомогательные функции
+├── models/                     # сохранённые модели (pkl)
+├── main.py                     # Streamlit-приложение
 ├── requirements.txt
 ├── README.md
 └── .gitignore
+```
 
 ## Запуск
 
