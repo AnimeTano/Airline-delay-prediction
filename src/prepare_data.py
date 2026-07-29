@@ -5,6 +5,19 @@ from sklearn.model_selection import train_test_split
 
 data = pd.read_csv("./data/raw/Airline_Delay_Cause.csv")
 
+# Сортируем по времени
+data = data.sort_values(['carrier', 'airport', 'year', 'month'])
+
+# Создаём лаги для arr_del15 и arr_delay (за 1, 3, 6 месяцев)
+for col in ['arr_del15', 'arr_delay']:
+    for lag in [1, 3, 6]:
+        data[f'{col}_lag{lag}'] = data.groupby(['carrier', 'airport'])[col].shift(lag)
+
+# Заполняем пропуски (первые лаги) нулями или средним
+data = data.fillna(0)
+
+print(data.columns)
+
 # Устраняем возможное data_leakage
 leak_features = [
     'arr_del15', 'arr_delay', 'carrier_delay', 'weather_delay', 'nas_delay', 'security_delay', 'late_aircraft_delay',
