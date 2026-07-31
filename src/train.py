@@ -31,7 +31,7 @@ encoder = TargetEncoder(
 X_train_enc = X_train.copy()
 X_val_enc = X_val.copy()
 
-X_train_enc = encoder.fit_transform(X_train, y_train).fillna(0)
+X_train_enc = encoder.fit_transform(X_train_enc, y_train).fillna(0)
 X_val_enc = encoder.transform(X_val).fillna(0)
 
 scaler = StandardScaler()
@@ -91,9 +91,9 @@ print(f"XGBoost ROC-AUC: {auc_xgb:.4f}")
 
 # ----------------------------------------------------------
 os.makedirs('models', exist_ok = True)
-joblib.dump(xgb, 'models/xgb_model.pk1')
-joblib.dump(encoder, 'models/target_encoder.pk1')
-joblib.dump(scaler, 'models/scaler.pk1')
+joblib.dump(xgb, 'models/xgb_model.pkl')
+joblib.dump(encoder, 'models/target_encoder.pkl')
+joblib.dump(scaler, 'models/scaler.pkl')
 # -----------------------------------------------------------
 # Проверяем на переобучение на test
 X_test = pd.read_csv("./data/processed/X_test.csv")

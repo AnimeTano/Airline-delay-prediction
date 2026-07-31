@@ -16,13 +16,12 @@ for col in ['arr_del15', 'arr_delay']:
 # Создаем скользящее среднее, как признаки для временных рядов
 for window in [3, 6]:
     data[f'arr_del15_rolling{window}'] = (
-        data.groupby(['carrier', 'airport'])['arr_del15'].transform(lambda x: x.rolling(window, min_periods = 1).mean())
+        data.groupby(['carrier', 'airport'])['arr_del15'].transform(lambda x: x.shift(1).rolling(window, min_periods = 1).mean())
     )
 
 # Заполняем пропуски (первые лаги) нулями или средним
-data = data.fillna(0)
-
-print(data.columns)
+lag_cols = [col for col in data.columns if 'lag' in col or 'rolling' in col]
+data[lag_cols] = data[lag_cols].fillna(0)
 
 # Устраняем возможное data_leakage
 leak_features = [
