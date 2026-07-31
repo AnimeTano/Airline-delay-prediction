@@ -69,10 +69,14 @@ print(f"Random Forest ROC-AUC: {auc_rf:.4f}")
 
 # XGBoost
 xgb = XGBClassifier(
-    n_estimators=100,
-    learning_rate=0.1,
-    random_state=42,
-    eval_metric='logloss'
+    n_estimators = 200,
+    learning_rate = 0.05,
+    random_state = 42,
+    max_depth = 6,
+    subsample = 0.8,
+    reg_alpha = 0.1,
+    reg_lambda = 1.0,
+    eval_metric = 'logloss'
 )
 xgb.fit(X_train_scaled, y_train)
 
@@ -81,12 +85,29 @@ auc_xgb = roc_auc_score(y_val, pred_xgb)
 
 print(f"XGBoost ROC-AUC: {auc_xgb:.4f}")
 
-pred = 0.01 * pred_lg + 0.09 * pred_rf + 0.9 * pred_xgb
-auc_all = roc_auc_score(y_val, pred)
-print(f'Ensemble ROC-AUC: {auc_all:.4f}')
+# pred = 0.1 * pred_lg + 0.2 * pred_rf + 0.7 * pred_xgb
+# auc_all = roc_auc_score(y_val, pred)
+# print(f'Ensemble ROC-AUC: {auc_all:.4f}')
 
 # ----------------------------------------------------------
 os.makedirs('models', exist_ok = True)
 joblib.dump(xgb, 'models/xgb_model.pk1')
 joblib.dump(encoder, 'models/target_encoder.pk1')
 joblib.dump(scaler, 'models/scaler.pk1')
+# -----------------------------------------------------------
+# Проверяем на переобучение на test
+X_test = pd.read_csv("./data/processed/X_test.csv")
+y_test = pd.read_csv("./data/processed/y_test.csv").values.ravel()
+
+X_test_enc = encoder.transform(X_test).fillna(0)
+X_test_scaled = X_test_enc.copy()
+X_test_scaled = scaler.transform(X_test_scaled)
+
+pred_train = xgb.predict_proba(X_train_scaled)[:, 1]
+pred_test = xgb.predict_proba(X_test_scaled)[:, 1]
+
+auc_train = roc_auc_score(y_train, pred_train)
+auc_test = roc_auc_score(y_test, pred_test)
+
+print(f"Train ROC-AUC: {auc_train:.4f}")
+print(f"Test ROC-AUC: {auc_test:.4f}")
